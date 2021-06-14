@@ -5,82 +5,42 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    private SpriteRenderer image;
     private Rigidbody2D rb;
     public float force;
-
-    public Color cyan;
-    public Color yellow;
-    public Color magenta;
-    public Color pink;
-
-    public string currentColor;
-
-    public GameObject won;
-    public GameObject Lose;
-    public ParticleSystem ps;
-    // Start is called before the first frame update
+    public SpriteRenderer CubecolorMat;
+    public Color currentColor;
+    public GameManager gameManager;
+    
     void Start()
     {
-        image = GetComponent<SpriteRenderer>();
-        rb = GetComponent<Rigidbody2D>();
-        SetRandomColor();
+        CubecolorMat.color = currentColor;
+        rb = GetComponentInChildren<Rigidbody2D>();
     }
-   public void SetRandomColor()
-    {
-        int index = Random.Range(0, 4);
-
-        switch(index)
-        {
-            case 0:
-                currentColor = "Cyan";
-                image.color = cyan;
-                break;
-            case 1:
-                currentColor = "Yellow";
-                image.color = yellow;
-                break;
-            case 2:
-                currentColor = "Magenta";
-                image.color = magenta;
-                break;
-            case 3:
-                currentColor = "Pink";
-                image.color = pink;
-                break;
-        }
-    }
-    // Update is called once per frame
     void Update()
     {
-        if(Input.GetMouseButton(0))
+        if(Input.GetMouseButtonDown(0))
         {
             rb.velocity = Vector2.up * force;
         }
     }
+    public void ChangeColor()
+    {
+        CubecolorMat.color = currentColor;
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag != currentColor && collision.tag != "Changer")
+        if(collision.tag == "Obstacle")
         {
-            Debug.Log("FUfasdsdsdsdsdsdsdsdsdCK");
-            Lose.SetActive(true);
+            if(collision.GetComponent<SpriteRenderer>().color != CubecolorMat.color)
+           {
+            gameManager.uIManager.Lost();
+            gameManager.uIManager.UpdateScore();
+           }
         }
-        if (collision.tag == "Changer")
+        if(collision.CompareTag("End"))
         {
-            SetRandomColor();
-            Destroy(collision.gameObject);
-            return;
-        }
-        else
-        {
-        }
-        if (collision.tag == "End")
-        {
-            won.SetActive(true);
-        }
-        if (collision.tag == "GO")
-        {
-            Lose.SetActive(true);
+            gameManager.uIManager.Lost();
+            Debug.Log("Died");
         }
     }
 

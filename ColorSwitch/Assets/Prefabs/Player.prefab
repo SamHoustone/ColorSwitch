@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8121462612672916298}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.27, y: -2.87, z: 0.79737383}
+  m_LocalPosition: {x: -0.27, y: -2.87, z: 0}
   m_LocalScale: {x: 0.4192638, y: 0.4192638, z: 0.4192638}
   m_Children: []
   m_Father: {fileID: 0}
@@ -138,3 +138,4 @@ MonoBehaviour:
   force: 8
   CubecolorMat: {fileID: 8121462612672916300}
   currentColor: {r: 0, g: 0, b: 0, a: 0}
+  gameManager: {fileID: 0}

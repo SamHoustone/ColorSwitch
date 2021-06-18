@@ -21,13 +21,14 @@ public class Player : MonoBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             rb.velocity = Vector2.up * force;
+            gameManager.audioManager.Tap();
         }
     }
     public void ChangeColor()
     {
         CubecolorMat.color = currentColor;
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+   /*private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.tag == "Obstacle")
         {
@@ -42,6 +43,6 @@ public class Player : MonoBehaviour
             gameManager.uIManager.Lost();
             Debug.Log("Died");
         }
-    }
+    }*/
 
 }

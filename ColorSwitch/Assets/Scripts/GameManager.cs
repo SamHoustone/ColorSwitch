@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public UIManager uIManager;
+    public AudioManager audioManager;
    public List<Color> colors = new List<Color>();
    public List<GameObject> Obstacles = new List<GameObject>();
     public GameObject colorChanger;
@@ -16,10 +17,14 @@ public class GameManager : MonoBehaviour
    public Player player;
    public int Score;
    public int HighScore;
+   public int number;
+   private int colorChangerCount;
+   private int ObstacleCount;
 
 
    private void Start()
    {
+       audioManager = FindObjectOfType<AudioManager>();
        HighScore = PlayerPrefs.GetInt("HighScore");
        Shuffle(colors);
        PopulateObstacles();
@@ -31,10 +36,11 @@ public class GameManager : MonoBehaviour
       for (int i = 0; i < NoOfObstacles; i++)
       {
         int Range = Random.Range(0,Obstacles.Count);
-          GameObject ObstaclesObj = Instantiate(Obstacles[Range]);
-          obstaclesList.Add(ObstaclesObj);
-          ObstaclesObj.transform.SetParent(ObstacleTransform);
-          obstaclesList[i].transform.position += new Vector3(0,i*10,0);
+        GameObject ObstaclesObj = Instantiate(Obstacles[Range]);
+        obstaclesList.Add(ObstaclesObj);
+        ObstaclesObj.transform.SetParent(ObstacleTransform);
+        obstaclesList[i].transform.position += new Vector3(0,ObstacleCount*10,0);
+        ObstacleCount++;
       }
    }
     public void PopulateColorChanger()
@@ -44,7 +50,8 @@ public class GameManager : MonoBehaviour
           GameObject colorChangerObj = Instantiate(colorChanger);
           colorChangerList.Add(colorChangerObj);
           colorChangerObj.transform.SetParent(ColorChangerTransform);
-          colorChangerList[j].transform.position += new Vector3(-0.2f,j*10+5,0);
+          colorChangerList[j].transform.position += new Vector3(-0.2f,colorChangerCount*10+5,0);
+          colorChangerCount++;
       }
    }
 
@@ -63,21 +70,26 @@ public class GameManager : MonoBehaviour
         else
         {
             obstaclesList[i].GetComponent<ObstacleComponent>().speed = SpeedRange;
-        }
+        }     
         obstaclesList[i].GetComponent<ObstacleComponent>().AssignColor();
       } 
       player.currentColor = colors[0];
       player.ChangeColor();
+
+      Shuffle(colors);
+      colorChangerList[number].GetComponent<ColorChanger>().GetColor(colors[0]);   
    }
    public void AssignColorOnRuntime()
    {
-      Shuffle(colors);
        for (var i = 0; i < obstaclesList.Count; i++)
       {
-        obstaclesList[i].GetComponent<ObstacleComponent>().AssignColor();
+        obstaclesList[i].GetComponent<ObstacleComponent>().AssignColor();    
       } 
       player.currentColor = colors[0];
       player.ChangeColor();
+
+      Shuffle(colors);
+      colorChangerList[number].GetComponent<ColorChanger>().GetColor(colors[0]);   
    }
    public void Shuffle(List<Color> list)
     {
@@ -93,11 +105,25 @@ public class GameManager : MonoBehaviour
     }
     public void Lost()
     {
+        audioManager.DeathPlay();
         HighScore = PlayerPrefs.GetInt("HighScore");
         if(HighScore < Score)
         {
             HighScore = Score;
         }
         PlayerPrefs.SetInt("HighScore",HighScore);
+    }
+     public void More()
+    {
+        for (int i = 0; i < obstaclesList.Count; i++)
+        {
+            obstaclesList[i].GetComponent<ObstacleComponent>().SelfDestruct();
+            colorChangerList[i].GetComponent<ColorChanger>().SelfDestruct();
+        }
+        obstaclesList.Clear();
+        colorChangerList.Clear();
+        PopulateObstacles();
+        PopulateColorChanger();
+        AssignColor();
     }
 }

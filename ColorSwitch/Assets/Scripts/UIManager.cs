@@ -1,7 +1,9 @@
+using System.Net.Mime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
@@ -10,6 +12,8 @@ public class UIManager : MonoBehaviour
     public GameObject Wonpanel;
     public GameObject LostPanel;
     public GameObject PlayPanel;
+    public GameObject UiPanel;
+    public Sprite[] bgImages;
     public TextMeshProUGUI ScoreText,ScoreTextWon,ScoreTextLost,HighScoreTextWon,HighScoreTextLost,HighScoreMain;
     private void Start()
     {
@@ -20,6 +24,8 @@ public class UIManager : MonoBehaviour
         ScoreText.text = gameManager.Score.ToString();
         Wonpanel.SetActive(false);
         LostPanel.SetActive(false);
+        int random = Random.Range(0,bgImages.Length);
+        UiPanel.GetComponent<Image>().sprite = bgImages[random];
     }
     public void Restart()
     {
